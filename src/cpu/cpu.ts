@@ -76,19 +76,22 @@ export class CPU {
   }
 
   private decodeAndExecuteInstruction(instruction: string) {
-    const args = instruction.split(' ');
+    let args = instruction.split(' ');
     const OPCODE: string = args[0].toUpperCase();
-    
+
     // This will look for a function composed by op + OPCODE, e.g. opCARGI
     const executionFunction = (this as any)[`op${OPCODE}`];
-
+    
+    
     if (typeof executionFunction !== 'function') {
       return this.interruptMode =  InterruptMode.INTERRUPTED;
     }
-
+    
     args.shift();
 
-    executionFunction(...args);
+    args = args.filter(a => a.length); // Filter out empty strings
+
+    (executionFunction as Function).bind(this)(...args);
   }
 
   /**********************************
@@ -99,7 +102,7 @@ export class CPU {
 
   /** coloca o valor `val` no acumulador (A=val) */
   private opCARGI(val: number) {
-    this.accumulator = val;
+    this.accumulator = +val;
   }
 
   /** coloca no acumulador o valor na posição `index` da memória de dados (A=M[index]) */
@@ -135,7 +138,7 @@ export class CPU {
   /** se A vale 0, coloca o valor n no PC */
   private opDESVZ(n: number) {
     if (this.accumulator === 0) {
-      this.programCounter = n;
+      this.programCounter = +n;
     }
   }
 }
