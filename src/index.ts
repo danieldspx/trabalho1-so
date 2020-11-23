@@ -16,9 +16,6 @@ instructionsLineReader.on('close', () => { // All instructions were loaded
     while(true) {
       cpu.executeNextInstruction();
     }
-    // for (let i = 0; i < allInstructions.length; i++) {
-    //   cpu.executeNextInstruction();
-    // }
   } catch (error) {
     console.log('Error: ', error.message);
     console.log('Data Memory: ', cpu.getDataMemory());
